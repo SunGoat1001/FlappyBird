@@ -89,6 +89,28 @@ public class MyGdxGame extends ApplicationAdapter {
         }
     }
 
+    public void renew() {
+        velocity = 0;
+        scores = 0;
+        scoringTube = 0;
+
+        for (int i = 0; i < numberOfTube; i++) {
+            tubeOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 300);
+
+            tubeX[i] = Gdx.graphics.getWidth() - topTube.getWidth() / 2 + i * distanceBetweenTubes;
+        }
+        birdY = Gdx.graphics.getHeight() / 2 - birds[0].getHeight() / 2;
+
+        for (int i = 0; i < numberOfTube; i++) {
+            tubeOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 300);
+
+            tubeX[i] = (float) Gdx.graphics.getWidth() - topTube.getWidth() / 2 + i * distanceBetweenTubes;
+
+            topTubeRectangle[i] = new Rectangle();
+            bottomTubeRectangle[i] = new Rectangle();
+        }
+    }
+
     @Override
     public void render() {
         batch.begin();
@@ -113,7 +135,7 @@ public class MyGdxGame extends ApplicationAdapter {
             //Tube chạy qua 1 nửa màn hình sẽ +1đ
             if (tubeX[scoringTube] < (Gdx.graphics.getWidth() / 2 - birds[0].getWidth())) {
                 scores++;
-                soundPoint.play();
+                soundPoint.play(1f);
 
                 if (scoringTube < numberOfTube - 1) {
                     scoringTube++;
@@ -142,9 +164,7 @@ public class MyGdxGame extends ApplicationAdapter {
                         Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i],
                         bottomTube.getWidth(),
                         bottomTube.getHeight());
-
             }
-
 
             if (birdY > 0) {
                 velocity += gravity;
@@ -160,24 +180,8 @@ public class MyGdxGame extends ApplicationAdapter {
         } else if (gameState == 3) {
             batch.draw(gameOver, Gdx.graphics.getWidth() / 2 - gameOver.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             if (Gdx.input.justTouched()) {
+                renew();
                 gameState = 1;
-                velocity = 0;
-                scores = 0;
-                for (int i = 0; i < numberOfTube; i++) {
-                    tubeOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 300);
-
-                    tubeX[i] = Gdx.graphics.getWidth() - topTube.getWidth() / 2 + i * distanceBetweenTubes;
-                }
-                birdY = Gdx.graphics.getHeight() / 2 - birds[0].getHeight() / 2;
-
-                for (int i = 0; i < numberOfTube; i++) {
-                    tubeOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 300);
-
-                    tubeX[i] = (float) Gdx.graphics.getWidth() - topTube.getWidth() / 2 + i * distanceBetweenTubes;
-
-                    topTubeRectangle[i] = new Rectangle();
-                    bottomTubeRectangle[i] = new Rectangle();
-                }
             }
         }
 
@@ -191,11 +195,12 @@ public class MyGdxGame extends ApplicationAdapter {
                 ,birdY + birds[flapState].getWidth() / 2
                 ,birds[flapState].getWidth() / 2);
 
-        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        //shapeRenderer.setColor(Color.RED);
-        //shapeRenderer.circle(circle.x,circle.y,circle.radius);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        shapeRenderer.setColor(Color.RED);
+//        shapeRenderer.circle(circle.x,circle.y,circle.radius);
+
         for (int i = 0 ; i < numberOfTube ; i++) {
-			/*
+/*
 			shapeRenderer.rect(tubeX[i],
 					Gdx.graphics.getHeight() / 2  + gap / 2 + tubeOffset[i],
 					topTube.getWidth(),
@@ -205,31 +210,12 @@ public class MyGdxGame extends ApplicationAdapter {
 					Gdx.graphics.getHeight() / 2 - gap / 2 - bottomTube.getHeight() + tubeOffset[i],
 					bottomTube.getWidth(),
 					bottomTube.getHeight());
-			*/
+*/
             if (Intersector.overlaps(circle,topTubeRectangle[i])
                     || Intersector.overlaps(circle,bottomTubeRectangle[i]) ) {
-                gameState = 1;
-                velocity = 0;
-                scores = 0;
-                for (int j = 0; i < numberOfTube; i++) {
-                    tubeOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 300);
-
-                    tubeX[i] = Gdx.graphics.getWidth() - topTube.getWidth() / 2 + i * distanceBetweenTubes;
-                }
-                birdY = Gdx.graphics.getHeight() / 2 - birds[0].getHeight() / 2;
-
-                for (int j = 0; i < numberOfTube; i++) {
-                    tubeOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 300);
-
-                    tubeX[i] = (float) Gdx.graphics.getWidth() - topTube.getWidth() / 2 + i * distanceBetweenTubes;
-
-                    topTubeRectangle[i] = new Rectangle();
-                    bottomTubeRectangle[i] = new Rectangle();
-                }
-
-                soundHit.play();
                 gameState = 3;
-
+                renew();
+                soundHit.play(1f);
             }
 
         }
